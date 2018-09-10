@@ -57,6 +57,7 @@ namespace TestRunnerLib
     {
         private readonly Process _process;
         private readonly StreamWriter _log;
+        private readonly StreamWriter _memoryLog;
         private readonly bool _showStatus;
         private readonly bool _buildMode;
 
@@ -93,10 +94,12 @@ namespace TestRunnerLib
             bool useVendorReaders = true,
             int timeoutMultiplier = 1,
             string results = null,
-            StreamWriter log = null)
+            StreamWriter log = null,
+            StreamWriter memoryLog = null)
         {
             _buildMode = buildMode;
             _log = log;
+            _memoryLog = memoryLog;
             _process = Process.GetCurrentProcess();
             _showStatus = showStatus;
             TestContext = new TestRunnerContext();
@@ -266,11 +269,7 @@ namespace TestRunnerLib
                 if (crtLeakedBytes > CheckCrtLeaks)
                     Log("!!! {0} CRT-LEAKED {1} bytes\r\n", test.TestMethod.Name, crtLeakedBytes);
 
-                using (var writer = new FileStream("TestRunnerMemory.log", FileMode.Append, FileAccess.Write, FileShare.Read))
-                using (var stringWriter = new StreamWriter(writer))
-                {
-                    stringWriter.WriteLine(TotalMemory.ToString("F1"));
-                }
+                _memoryLog.WriteLine(TotalMemory.ToString("F1"));
                 return true;
             }
 

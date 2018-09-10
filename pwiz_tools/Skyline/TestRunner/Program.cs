@@ -74,7 +74,7 @@ namespace TestRunner
                 "runsmallmoleculeversions=off;" +
                 "testsmallmolecules=off;" +
                 "clipboardcheck=off;profile=off;vendors=on;language=fr-FR,en-US;" +
-                "log=TestRunner.log;report=TestRunner.log";
+                "log=TestRunner.log;report=TestRunner.log;logmemory=TestRunnerMemory.log";
             var commandLineArgs = new CommandLineArgs(args, commandLineOptions);
 
             switch (commandLineArgs.SearchArgs("?;/?;-?;help;report"))
@@ -115,6 +115,13 @@ namespace TestRunner
                 FileAccess.Write,
                 FileShare.ReadWrite);
             var log = new StreamWriter(logStream);
+
+            var memoryLogStream = new FileStream(
+                commandLineArgs.ArgAsString("logmemory"),
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.ReadWrite);
+            var memoryLog = new StreamWriter(memoryLogStream);
 
             bool allTestsPassed = true;
 
@@ -176,7 +183,7 @@ namespace TestRunner
                         if (profiling)
                         {
                             Console.WriteLine("\nRunning each test once to warm up memory...\n");
-                            allTestsPassed = RunTestPasses(testList, unfilteredTestList, commandLineArgs, log, 1, 1,
+                            allTestsPassed = RunTestPasses(testList, unfilteredTestList, commandLineArgs, log, memoryLog, 1, 1,
                                 true);
                             Console.WriteLine("\nTaking memory snapshot...\n");
                             MemoryProfiler.Snapshot("start");
@@ -185,7 +192,7 @@ namespace TestRunner
                         }
 
                         allTestsPassed =
-                            RunTestPasses(testList, unfilteredTestList, commandLineArgs, log, passes, repeat, profiling) &&
+                            RunTestPasses(testList, unfilteredTestList, commandLineArgs, log, memoryLog, passes, repeat, profiling) &&
                             allTestsPassed;
 
                         // Pause for profiling
@@ -251,6 +258,7 @@ namespace TestRunner
             List<TestInfo> unfilteredTestList, 
             CommandLineArgs commandLineArgs, 
             StreamWriter log, 
+            StreamWriter memoryLog,
             long loopCount, 
             long repeat,
             bool profiling = false)
@@ -317,7 +325,7 @@ namespace TestRunner
                 demoMode, buildMode, offscreen, internet, showStatus, perftests, addsmallmoleculenodes,
                 runsmallmoleculeversions,
                 pauseDialogs, pauseSeconds, useVendorReaders, timeoutMultiplier, 
-                results, log);
+                results, log, memoryLog);
 
             if (commandLineArgs.ArgAsBool("clipboardcheck"))
             {
