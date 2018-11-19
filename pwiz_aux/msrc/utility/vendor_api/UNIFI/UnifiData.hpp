@@ -130,15 +130,16 @@ typedef boost::shared_ptr<Experiment> ExperimentPtr;
 typedef std::map<std::pair<int, int>, ExperimentPtr> ExperimentsMap;*/
 
 
-enum PWIZ_API_DECL Polarity
+enum class PWIZ_API_DECL Polarity
 {
     Unknown = 0,
     Negative = 1,
     Positive = 2
 };
 
-enum PWIZ_API_DECL EnergyLevel
+enum class PWIZ_API_DECL EnergyLevel
 {
+    Unknown = 0,
     Low = 1,
     High = 2
 };
@@ -149,10 +150,11 @@ struct PWIZ_API_DECL UnifiSpectrum
     Polarity scanPolarity;
     EnergyLevel energyLevel;
     double driftTime;
+    std::pair<double, double> scanRange;
 
     size_t arrayLength;
-    std::vector<double> mzArray;
-    std::vector<double> intensityArray;
+    pwiz::util::BinaryData<double> mzArray;
+    pwiz::util::BinaryData<double> intensityArray;
 };
 
 class PWIZ_API_DECL UnifiData
@@ -171,13 +173,14 @@ class PWIZ_API_DECL UnifiData
     const boost::local_time::local_date_time& getAcquisitionStartTime() const;
     const std::string& getSampleName() const;
     const std::string& getSampleDescription() const;
+    int getReplicateNumber() const;
+    const std::string& getWellPosition() const;
 
     bool hasIonMobilityData() const;
 
     bool canConvertDriftTimeAndCCS() const;
     double driftTimeToCCS(double driftTimeInMilliseconds, double mz, int charge) const;
     double ccsToDriftTime(double ccs, double mz, int charge) const;
-
 
     private:
     class Impl;

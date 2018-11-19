@@ -174,10 +174,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(BuildPath)\obj\$(Platform)\$(Configuration)\pwiz_bindings_cli.dll</HintPath>
     </Reference>
-    <Reference Include="SharpSvn, Version=1.9005.3957.231, Culture=neutral, PublicKeyToken=d729672594885a28, processorArchitecture=$(Platform)">
-      <HintPath>packages\SharpSvn.1.9-$(Platform).1.9005.3957.231\lib\net40\SharpSvn.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
